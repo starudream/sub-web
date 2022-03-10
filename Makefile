@@ -1,4 +1,5 @@
 .PHONY: init
+init: SHELL:=/bin/bash
 init:
 	git submodule update --init
 	cp -rf custom/* sub-web
