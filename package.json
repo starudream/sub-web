@@ -1,7 +1,0 @@
-{
-    "name": "subconverter-web",
-    "private": true,
-    "scripts": {
-        "build": "rm -rf dist && cp -rf custom/* sub-web && cd sub-web && yarn && yarn build && mv dist .."
-    }
-}
