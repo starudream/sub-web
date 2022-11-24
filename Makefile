@@ -1,6 +1,13 @@
 .PHONY: init
 init:
 	git submodule update --init
+
+.PHONY: update
+update:
+	git submodule update --remote
+
+.PHONY: dist
+dist:
 	cp -rf custom/* sub-web
 	cp -rf custom/.env sub-web
 	rm -rf dist
