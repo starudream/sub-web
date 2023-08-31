@@ -5,6 +5,10 @@
       {
         "label": "simple.ini",
         "value": "https://cdn.jsdelivr.net/gh/starudream/sub-rule/Clash/config/simple.ini"
+      },
+      {
+        "label": "full.ini",
+        "value": "https://cdn.jsdelivr.net/gh/starudream/sub-rule/Clash/config/full.ini"
       }
     ]
   },
