@@ -9,6 +9,10 @@
       {
         "label": "full.ini",
         "value": "https://cdn.jsdelivr.net/gh/starudream/sub-rule/Clash/config/full.ini"
+      },
+      {
+        "label": "renzhe.ini",
+        "value": "https://cdn.jsdelivr.net/gh/starudream/sub-rule/Clash/config/renzhe.ini"
       }
     ]
   },

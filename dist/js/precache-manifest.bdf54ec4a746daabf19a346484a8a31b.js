@@ -40,7 +40,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/manifest.json"
   },
   {
-    "revision": "f8a4c051cc1947cd3cce454b2e60a5f7",
+    "revision": "54c4dedffb2f0b653887f283b76d7911",
     "url": "/remote.json"
   },
   {
