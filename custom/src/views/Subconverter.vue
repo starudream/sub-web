@@ -146,41 +146,6 @@
         </el-card>
       </el-col>
     </el-row>
-
-    <el-dialog
-      :visible.sync="dialogUploadConfigVisible"
-      :show-close="false"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="700px"
-    >
-      <div slot="title">
-        Remote config upload
-        <el-popover trigger="hover" placement="right" style="margin-left: 10px">
-          <el-link type="primary" :href="sampleConfig" target="_blank" icon="el-icon-info">参考配置</el-link>
-          <i class="el-icon-question" slot="reference"></i>
-        </el-popover>
-      </div>
-      <el-form label-position="left">
-        <el-form-item prop="uploadConfig">
-          <el-input
-            v-model="uploadConfig"
-            type="textarea"
-            :autosize="{ minRows: 15, maxRows: 15}"
-            maxlength="5000"
-            show-word-limit
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="uploadConfig = ''; dialogUploadConfigVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="confirmUploadConfig"
-          :disabled="uploadConfig.length === 0"
-        >确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -189,8 +154,8 @@ const project = process.env.VUE_APP_PROJECT
 const remoteConfigSample = process.env.VUE_APP_SUBCONVERTER_REMOTE_CONFIG
 const gayhubRelease = process.env.VUE_APP_BACKEND_RELEASE
 const defaultBackend = process.env.VUE_APP_SUBCONVERTER_DEFAULT_BACKEND + '/sub?'
-const shortUrlBackend = process.env.VUE_APP_MYURLS_DEFAULT_BACKEND + '/short'
-const configUploadBackend = process.env.VUE_APP_CONFIG_UPLOAD_BACKEND + '/config/upload'
+const shortUrlBackend = process.env.VUE_APP_MYURLS_API
+const configUploadBackend = process.env.VUE_APP_CONFIG_UPLOAD_API
 const tgBotLink = process.env.VUE_APP_BOT_LINK
 
 export default {
@@ -234,9 +199,9 @@ export default {
         nodeList: false,
         extraset: false,
         sort: false,
-        udp: false,
+        udp: true,
         tfo: false,
-        scv: false,
+        scv: true,
         fdn: false,
         appendType: false,
         insert: false, // 是否插入默认订阅的节点，对应配置项 insert_url
@@ -277,6 +242,7 @@ export default {
   },
   mounted() {
     this.form.clientType = "clash";
+    this.notify();
     this.getBackendVersion();
     this.getRemoteConfig();
   },
@@ -442,46 +408,6 @@ export default {
           "各种订阅链接（短链接服务除外）生成纯前端实现，无隐私问题。默认提供后端转换服务，隐私担忧者请自行搭建后端服务。"
         )
       });
-    },
-    confirmUploadConfig() {
-      if (this.uploadConfig === "") {
-        this.$message.warning("远程配置不能为空");
-        return false;
-      }
-
-      this.loading = true;
-
-      let data = new FormData();
-      data.append("password", this.uploadPassword);
-      data.append("config", this.uploadConfig);
-
-      this.$axios
-        .post(configUploadBackend, data, {
-          header: {
-            "Content-Type": "application/form-data; charset=utf-8"
-          }
-        })
-        .then(res => {
-          if (res.data.code === 0 && res.data.data.url !== "") {
-            this.$message.success(
-              "远程配置上传成功，配置链接已复制到剪贴板，有效期三个月望知悉"
-            );
-
-            // 自动填充至『表单-远程配置』
-            this.form.remoteConfig = res.data.data.url;
-            this.$copyText(this.form.remoteConfig);
-
-            this.dialogUploadConfigVisible = false;
-          } else {
-            this.$message.error("远程配置上传失败: " + res.data.msg);
-          }
-        })
-        .catch(() => {
-          this.$message.error("远程配置上传失败");
-        })
-        .finally(() => {
-          this.loading = false;
-        });
     },
     backendSearch(queryString, cb) {
       let backends = this.options.backendOptions;
