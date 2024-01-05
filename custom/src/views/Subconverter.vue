@@ -16,13 +16,8 @@
                 <el-radio v-model="advanced" label="2">进阶模式</el-radio>
               </el-form-item>
               <el-form-item label="订阅链接:">
-                <el-input
-                  v-model="form.sourceSubUrl"
-                  type="textarea"
-                  rows="3"
-                  placeholder="支持订阅或ss/ssr/vmess链接，多个链接每行一个或用 | 分隔"
-                  @blur="saveSubUrl"
-                />
+                <el-input v-model="form.sourceSubUrl" type="textarea" rows="3"
+                  placeholder="支持订阅或ss/ssr/vmess链接，多个链接每行一个或用 | 分隔" @blur="saveSubUrl" />
               </el-form-item>
               <el-form-item label="客户端:">
                 <el-select v-model="form.clientType" style="width: 100%">
@@ -32,33 +27,16 @@
 
               <div v-if="advanced === '2'">
                 <el-form-item label="后端地址:">
-                  <el-autocomplete
-                    style="width: 100%"
-                    v-model="form.customBackend"
-                    :fetch-suggestions="backendSearch"
-                  >
+                  <el-autocomplete style="width: 100%" v-model="form.customBackend" :fetch-suggestions="backendSearch"
+                    placeholder="动动小手，（建议）自行搭建后端服务。例：http://127.0.0.1:25500/sub?">
                     <el-button slot="append" @click="gotoGayhub" icon="el-icon-link">前往项目仓库</el-button>
                   </el-autocomplete>
                 </el-form-item>
                 <el-form-item label="远程配置:">
-                  <el-select
-                    v-model="form.remoteConfig"
-                    allow-create
-                    filterable
-                    placeholder="请选择"
-                    style="width: 100%"
-                  >
-                    <el-option-group
-                      v-for="group in options.remoteConfig"
-                      :key="group.label"
-                      :label="group.label"
-                    >
-                      <el-option
-                        v-for="item in group.options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      ></el-option>
+                  <el-select v-model="form.remoteConfig" allow-create filterable placeholder="请选择" style="width: 100%">
+                    <el-option-group v-for="group in options.remoteConfig" :key="group.label" :label="group.label">
+                      <el-option v-for="item in group.options" :key="item.value" :label="item.label"
+                        :value="item.value"></el-option>
                     </el-option-group>
                     <el-button slot="append" @click="gotoRemoteConfig" icon="el-icon-link">配置示例</el-button>
                   </el-select>
@@ -122,23 +100,14 @@
 
               <el-form-item label="定制订阅:">
                 <el-input class="copy-content" disabled v-model="customSubUrl">
-                  <el-button
-                    slot="append"
-                    v-clipboard:copy="customSubUrl"
-                    v-clipboard:success="onCopy"
-                    ref="copy-btn"
-                    icon="el-icon-document-copy"
-                  >复制</el-button>
+                  <el-button slot="append" v-clipboard:copy="customSubUrl" v-clipboard:success="onCopy" ref="copy-btn"
+                    icon="el-icon-document-copy">复制</el-button>
                 </el-input>
               </el-form-item>
 
               <el-form-item label-width="0px" style="margin-top: 40px; text-align: center">
-                <el-button
-                  style="width: 120px"
-                  type="danger"
-                  @click="makeUrl"
-                  :disabled="form.sourceSubUrl.length === 0"
-                >生成订阅链接</el-button>
+                <el-button style="width: 140px" type="danger" @click="makeUrl"
+                  :disabled="form.sourceSubUrl.length === 0">生成订阅链接</el-button>
               </el-form-item>
 
             </el-form>
@@ -154,8 +123,6 @@ const project = process.env.VUE_APP_PROJECT
 const remoteConfigSample = process.env.VUE_APP_SUBCONVERTER_REMOTE_CONFIG
 const gayhubRelease = process.env.VUE_APP_BACKEND_RELEASE
 const defaultBackend = process.env.VUE_APP_SUBCONVERTER_DEFAULT_BACKEND + '/sub?'
-const shortUrlBackend = process.env.VUE_APP_MYURLS_API
-const tgBotLink = process.env.VUE_APP_BOT_LINK
 
 export default {
   data() {
@@ -198,7 +165,7 @@ export default {
         nodeList: false,
         extraset: false,
         sort: false,
-        udp: true,
+        udp: false,
         tfo: false,
         scv: true,
         fdn: false,
@@ -220,12 +187,6 @@ export default {
       loading: false,
       customSubUrl: "",
       curtomShortSubUrl: "",
-
-      dialogUploadConfigVisible: false,
-      uploadConfig: "",
-      uploadPassword: "",
-      myBot: tgBotLink,
-      sampleConfig: remoteConfigSample,
 
       needUdp: false, // 是否需要添加 udp 参数
     };
@@ -257,31 +218,6 @@ export default {
     },
     gotoRemoteConfig() {
       window.open(remoteConfigSample);
-    },
-    clashInstall() {
-      if (this.customSubUrl === "") {
-        this.$message.error("请先填写必填项，生成订阅链接");
-        return false;
-      }
-
-      const url = "clash://install-config?url=";
-      window.open(
-        url +
-          encodeURIComponent(
-            this.curtomShortSubUrl !== ""
-              ? this.curtomShortSubUrl
-              : this.customSubUrl
-          )
-      );
-    },
-    surgeInstall() {
-      if (this.customSubUrl === "") {
-        this.$message.error("请先填写必填项，生成订阅链接");
-        return false;
-      }
-
-      const url = "surge://install-config?url=";
-      window.open(url + this.customSubUrl);
     },
     makeUrl() {
       if (this.form.sourceSubUrl === "" || this.form.clientType === "") {
@@ -361,39 +297,6 @@ export default {
 
       this.$copyText(this.customSubUrl);
       this.$message.success("定制订阅已复制到剪贴板");
-    },
-    makeShortUrl() {
-      if (this.customSubUrl === "") {
-        this.$message.warning("请先生成订阅链接，再获取对应短链接");
-        return false;
-      }
-
-      this.loading = true;
-
-      let data = new FormData();
-      data.append("longUrl", btoa(this.customSubUrl));
-
-      this.$axios
-        .post(shortUrlBackend, data, {
-          header: {
-            "Content-Type": "application/form-data; charset=utf-8"
-          }
-        })
-        .then(res => {
-          if (res.data.Code === 1 && res.data.ShortUrl !== "") {
-            this.curtomShortSubUrl = res.data.ShortUrl;
-            this.$copyText(res.data.ShortUrl);
-            this.$message.success("短链接已复制到剪贴板");
-          } else {
-            this.$message.error("短链接获取失败：" + res.data.Message);
-          }
-        })
-        .catch(() => {
-          this.$message.error("短链接获取失败");
-        })
-        .finally(() => {
-          this.loading = false;
-        });
     },
     notify() {
       const h = this.$createElement;
