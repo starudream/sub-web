@@ -13,10 +13,6 @@
       {
         "label": "wd.ini",
         "value": "https://raw.githubusercontent.com/starudream/sub-rule/master/Clash/config/wd.ini"
-      },
-      {
-        "label": "agg.ini",
-        "value": "https://raw.githubusercontent.com/starudream/sub-rule/master/Clash/config/agg.ini"
       }
     ]
   },
